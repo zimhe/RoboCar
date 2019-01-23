@@ -13,10 +13,11 @@ public class CarBody : MonoBehaviour {
     [SerializeField]  KeyCode backward = KeyCode.S;
     [SerializeField]  KeyCode left = KeyCode.A;
     [SerializeField]  KeyCode right = KeyCode.D;
-    [SerializeField] float lookAngle = 30f;
-    [SerializeField] float maxLookDistance = 100f;
-    [SerializeField] float safeDistance = 10f;
+    public float lookAngle = 15f;
+    public float maxLookDistance = 100f;
+    public float safeDistance = 10f;
 
+    
     List<KeyCode> keys;
 
     [SerializeField]RoboCarControlMode playMode = RoboCarControlMode.Manual;
@@ -143,23 +144,30 @@ public class CarBody : MonoBehaviour {
             DoAction();
         }
     }
+
+  
     void ExcecuteAuto()
     {
         if (playMode == RoboCarControlMode.Automatic)
         {
-            if (head.GetScanDistance(maxLookDistance) > safeDistance)
+            head.Scan(this);
+
+            if (head.BothOpen(safeDistance))
             {
-                if (!head.looking)
-                    DoAction(1);
+                Forward();
             }
             else
             {
-                head.looking = true;
                 Stop();
 
-                head.LookAt(lookAngle);
-
-                //head.LookAt(-lookAngle);
+                if (head.LeftOpen())
+                {
+                    Left();
+                }
+                else
+                {
+                    Right();
+                }
             }
         }
     }
