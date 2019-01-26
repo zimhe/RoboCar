@@ -13,6 +13,8 @@ public class CarBody : MonoBehaviour {
     [SerializeField]  KeyCode backward = KeyCode.S;
     [SerializeField]  KeyCode left = KeyCode.A;
     [SerializeField]  KeyCode right = KeyCode.D;
+    [SerializeField] bool _transmit;
+    [SerializeField] ArduinoControl controller;
     public float lookAngle = 15f;
     public float maxLookDistance = 100f;
     public float safeDistance = 10f;
@@ -33,7 +35,11 @@ public class CarBody : MonoBehaviour {
 
     public void Stop()
     {
-        foreach(var w in leftWheels )
+        if (_transmit)
+        {
+            controller.Transmit("s");
+        }
+        foreach (var w in leftWheels )
         {
             w.Stop();
         }
@@ -44,6 +50,10 @@ public class CarBody : MonoBehaviour {
     }
     public void Forward()
     {
+        if (_transmit)
+        {
+            controller.Transmit("f");
+        }
         foreach (var w in leftWheels)
         {
             w.Forward();
@@ -55,6 +65,10 @@ public class CarBody : MonoBehaviour {
     }
     public void Backward()
     {
+        if (_transmit)
+        {
+            controller.Transmit("b");
+        }
         foreach (var w in leftWheels)
         {
             w.Backward();
@@ -66,6 +80,10 @@ public class CarBody : MonoBehaviour {
     }
     public void Left()
     {
+        if (_transmit)
+        {
+            controller.Transmit("l");
+        }
         foreach (var w in leftWheels)
         {
             w.Backward();
@@ -78,6 +96,10 @@ public class CarBody : MonoBehaviour {
 
     public void Right()
     {
+        if (_transmit)
+        {
+            controller.Transmit("r");
+        }
         foreach (var w in leftWheels)
         {
             w.Forward();
