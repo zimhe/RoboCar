@@ -1,4 +1,4 @@
 sceneSetups:
-- path: Assets/Scene/RoboCarBase.unity
+- path: Assets/Scene/RoboCarToControl.unity
   isLoaded: 1
   isActive: 1

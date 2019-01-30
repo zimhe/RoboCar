@@ -18,6 +18,15 @@ public class CarBody : MonoBehaviour {
     public float lookAngle = 15f;
     public float maxLookDistance = 100f;
     public float safeDistance = 10f;
+    public float scanRate = 1f;
+
+    [HideInInspector] public float scanRateUpdate = 1f;
+
+    float currentDistance = 0f;
+    float currentAngle = 0f;
+
+    bool leftClose = false;
+    bool rightClose = false;
 
     
     List<KeyCode> keys;
@@ -30,6 +39,7 @@ public class CarBody : MonoBehaviour {
     void Start ()
     {
         keys = new List<KeyCode>{ brake, forward, backward, left, right };
+        scanRateUpdate = scanRate;
         Stop();
 	}
 
@@ -172,25 +182,73 @@ public class CarBody : MonoBehaviour {
     {
         if (playMode == RoboCarControlMode.Automatic)
         {
-            head.Scan(this);
+            currentDistance=head.Scan(this);
+            currentAngle = head.HeadAngle(this);
 
-            if (head.BothOpen(safeDistance))
+            if (currentAngle > 90f + lookAngle&&scanRateUpdate>0)
             {
-                Forward();
-            }
-            else
-            {
-                Stop();
-
-                if (head.LeftOpen())
+                scanRateUpdate = -scanRate;
+                if (currentDistance < safeDistance)
                 {
-                    Left();
+                    rightClose = true;
                 }
                 else
                 {
-                    Right();
+                    rightClose = false;
                 }
             }
+            else if(currentAngle<90f-lookAngle&&scanRateUpdate<0)
+            {
+                scanRateUpdate = scanRate;
+
+                if (currentDistance < safeDistance)
+                {
+                    leftClose = true;
+                }
+                else
+                {
+                    leftClose = false;
+                }
+            }
+
+            if (leftClose && rightClose)
+            {
+                Backward();
+            }
+            else
+            {
+                if (currentDistance < safeDistance && currentAngle > 90f)
+                {
+                    Left();
+                }
+                else if (currentDistance < safeDistance && currentAngle < 90f)
+                {
+                    Right();
+                }
+                else
+                {
+                    Forward();
+                }
+            }
+         
+
+            //if (head.BothOpen(safeDistance))
+            //{
+            //    Forward();
+            //}
+            //else
+            //{
+            //    Stop();
+
+            //    if (head.LeftOpen())
+            //    {
+            //        Left();
+            //    }
+            //    else
+            //    {
+            //        Right();
+            //    }
+            //}
         }
     }
 

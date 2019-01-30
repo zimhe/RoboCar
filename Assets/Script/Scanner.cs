@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Scanner : MonoBehaviour
 {
-    public float GetSensorDistance(float maxDis)
+    public float GetSensorDistance(CarBody body)
     {
         float dis;
         RaycastHit hit;
@@ -12,18 +12,22 @@ public class Scanner : MonoBehaviour
 
         Color col = Color.green;
 
-        hitSomething = Physics.Raycast(transform.position,transform.forward,out hit,maxDis);
+        hitSomething = Physics.Raycast(transform.position,transform.forward,out hit,body.maxLookDistance);
 
      
 
         if (hitSomething)
         {
             dis = hit.distance;
-            col = Color.red;
+            col = Color.yellow;
+            if (hit.distance < body.safeDistance)
+            {
+                col = Color.red;
+            }
         }
         else
         {
-            dis = maxDis;
+            dis = body.maxLookDistance;
         }
 
         Debug.DrawRay(transform.position, transform.forward * dis, col);

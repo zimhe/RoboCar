@@ -18,45 +18,29 @@ public class ArduinoControl : MonoBehaviour
 
     char[] buffer = new char[48];
 
+    public SerialListener listener;
+
 
     // Use this for initialization
-    void Start()
+    public void Initialize()
     {
         _sp = new SerialPort(_comName + _comIndex, 9600);
         _sp.Open();
-        _sp.ReadTimeout = 1;
+        _sp.ReadTimeout = 10;
+        listener.Listen(_sp);
     }
 
-    // Update is called once per frame
-    //void Update()
-    //{
-    //    if (_sp.IsOpen && _sp.BytesToRead > 0)
-    //    {
+    //Update is called once per frame
+    void Update()
+    {
+        //listener.Listen(_sp);
+    }
 
-    //        try
-    //        {
-    //            string bufferString = "";
-    //            _sp.Read(buffer, 0, 2);
-
-    //            buffer.ToList().ForEach(chr => { bufferString += chr.ToString(); });
-
-    //            print(bufferString);
-    //            if (bufferString.Contains("#A"))
-    //            {
-    //                print("Astoped");
-    //            }
-    //            if (bufferString.Contains("#B"))
-    //            {
-    //                print("Bstoped");
-    //            }
-    //        }
-    //        catch (Exception e)
-    //        {
-                
-    //        }
-    //    }
-
-    //}
+    public void Listen()
+    {
+        //Debug.Log("listen");
+        listener.Listen(_sp);
+    }
 
     private void OnDisable()
     {
@@ -70,6 +54,8 @@ public class ArduinoControl : MonoBehaviour
     public void Transmit(string index)
     {
         if (_sp.IsOpen == false) _sp.Open();
+
+        //_sp.DiscardInBuffer();
         _sp.Write(index);
     }
 }
